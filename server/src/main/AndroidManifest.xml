@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.iphonecamp.training2.server">
+
+    <!--
+    This permissions needs to be granted manually (once):
+    pm grant com.iphonecamp.training2.server android.permission.WRITE_SECURE_SETTINGS
+    -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Tether">
+
+        <service
+            android:name=".ToggleTetherService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.iphonecamp.training2.server.ToggleTetherService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".RemoteService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.iphonecamp.training2.server.RemoteService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>
