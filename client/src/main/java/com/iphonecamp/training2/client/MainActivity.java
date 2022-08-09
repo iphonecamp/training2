@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Switch;
 
 import com.iphonecamp.training2.common.IRemoteService;
 import com.iphonecamp.training2.common.Util;
@@ -26,6 +27,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(Util.LOG_TAG, "Main activity onCreate");
         setContentView(R.layout.activity_main);
+
+        // Watch for button clicks.
+        Switch airplaneSwitch = (Switch) findViewById(R.id.swAirplane);
+        airplaneSwitch.setOnCheckedChangeListener((view, isChecked) -> {
+            Log.d(Util.LOG_TAG, "Airplane switch changed");
+            try {
+                Log.i(Util.LOG_TAG, String.format("Got pid=%d", mService.getPid()));
+                mService.setAirplaneMode(isChecked);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+
+//        button.setOnClickListener(mBindListener);
+//        button = (Button)findViewById(R.id.unbind);
+//        button.setOnClickListener(unbindListener);
+//        killButton = (Button)findViewById(R.id.kill);
+//        killButton.setOnClickListener(killListener);
+//        killButton.setEnabled(false);
+
     }
 
     @Override
@@ -44,6 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 Log.i(Util.LOG_TAG, String.format("Got pid=%d", mService.getPid()));
+
+                Switch airplaneSwitch = (Switch) findViewById(R.id.swAirplane);
+                airplaneSwitch.setChecked(mService.getAirplaneMode());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
