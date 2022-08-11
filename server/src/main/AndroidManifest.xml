@@ -19,16 +19,6 @@
         android:theme="@style/Theme.Tether">
 
         <service
-            android:name=".ToggleTetherService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.iphonecamp.training2.server.ToggleTetherService" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </service>
-
-        <service
             android:name=".RemoteService"
             android:enabled="true"
             android:exported="true">

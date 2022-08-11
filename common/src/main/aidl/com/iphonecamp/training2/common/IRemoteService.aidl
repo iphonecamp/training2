@@ -1,18 +1,17 @@
 package com.iphonecamp.training2.common;
 
-// Declare any non-default types here with import statements
 
-/** Example service interface */
+// Remote service for controlling airplane mode and tethering mode
 interface IRemoteService {
-    /** Request the process ID of this service, to do evil things with it. */
-    int getPid();
+    // Get airplane mode
+    boolean getAirplaneModeEnabled();
 
-    /** Demonstrates some basic types that you can use as parameters
-     * and return values in AIDL.
-     */
-    void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
-            double aDouble, String aString);
+    // Set airplane mode
+    void setAirplaneModeEnabled(boolean enabled);
 
-    boolean getAirplaneMode();
-    void setAirplaneMode(boolean isOn);
+    // Get tethering state
+    boolean getTetheringEnabled();
+
+    // Set tethering state
+    void setTetheringEnabled(boolean enabled);
 }
