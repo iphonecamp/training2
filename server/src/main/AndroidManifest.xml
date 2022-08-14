@@ -4,7 +4,7 @@
     package="com.iphonecamp.training2.server">
 
     <!--
-    This permissions needs to be granted manually (once):
+    If app is NOT privileged, this permissions needs to be granted manually (once):
     pm grant com.iphonecamp.training2.server android.permission.WRITE_SECURE_SETTINGS
     -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
