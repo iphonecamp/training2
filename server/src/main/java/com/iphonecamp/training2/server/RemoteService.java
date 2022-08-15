@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.iphonecamp.training2.common.IRemoteService;
@@ -14,10 +15,11 @@ import com.iphonecamp.training2.common.UnexpectedNullException;
 import com.iphonecamp.training2.common.Util;
 
 import static com.iphonecamp.training2.common.UnexpectedNullException.nonNull;
+import static com.iphonecamp.training2.common.Util.withCause;
 
 
 /**
- * Remote service for controlling airplane mode and tethering state
+ * Remote service for controlling airplane mode and wifi tether
  */
 public class RemoteService extends Service {
     private @Nullable AirplaneMode mAirplaneMode;
@@ -32,8 +34,7 @@ public class RemoteService extends Service {
             mAirplaneMode = new AirplaneMode(getApplicationContext());
             mWifiTether = new WifiTether(getApplicationContext());
         } catch (UnexpectedNullException e) {
-            Log.e(Util.LOG_TAG, "Failed to create remote service");
-            e.printStackTrace();
+            Log.e(Util.LOG_TAG, "Failed to create remote service", e);
         }
     }
 
@@ -41,50 +42,48 @@ public class RemoteService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(Util.LOG_TAG, "Service onBind");
         // Return the interface
-        return binder;
+        return mBinder;
     }
 
-    private final IRemoteService.Stub binder = new IRemoteService.Stub() {
+    private final @NonNull IRemoteService.Stub mBinder = new IRemoteService.Stub() {
         @Override
-        public boolean getAirplaneModeEnabled() throws RemoteException {
-            Log.d(Util.LOG_TAG, "Getting airplane mode");
+        public boolean isAirplaneModeEnabled() throws RemoteException {
+            Log.d(Util.LOG_TAG, "Getting airplane mode enabled");
             try {
-                return mAirplaneMode.get();
-            } catch (AirplaneMode.InvalidState e) {
-                RemoteException remoteException = new RemoteException("Failed to get airplane mode");
-                remoteException.addSuppressed(e);
-                throw remoteException;
+                return nonNull(mAirplaneMode).get();
+            } catch (AirplaneMode.InvalidState | UnexpectedNullException e) {
+                throw withCause(new RemoteException("Failed to get airplane mode"), e);
             }
         }
 
         @Override
-        public void setAirplaneModeEnabled(boolean isOn) throws RemoteException {
-            Log.d(Util.LOG_TAG, String.format("Setting airplane mode to %b", isOn));
+        public void setAirplaneModeEnabled(boolean enabled) throws RemoteException {
+            Log.d(Util.LOG_TAG, String.format("Setting airplane mode enabled to %b", enabled));
             try {
-                nonNull(mAirplaneMode).set(isOn);
+                nonNull(mAirplaneMode).set(enabled);
             } catch (UnexpectedNullException e) {
-                RemoteException remoteException = new RemoteException("Failed to set airplane mode");
-                remoteException.addSuppressed(e);
-                throw remoteException;
+                throw withCause(new RemoteException(String.format("Failed to set airplane mode enabled to %b", enabled)), e);
             }
         }
 
         @Override
-        public boolean getTetheringEnabled() throws RemoteException {
-            Log.d(Util.LOG_TAG, "Getting tethering state");
+        public boolean isWifiTetherEnabled() throws RemoteException {
+            Log.d(Util.LOG_TAG, "Getting wifi tether enabled");
             try {
-                return mWifiTether.getEnabled();
-            } catch (WifiTether.InvalidState e) {
-                RemoteException remoteException = new RemoteException("Failed to get wifi tether state");
-                remoteException.addSuppressed(e);
-                throw remoteException;
+                return nonNull(mWifiTether).isEnabled();
+            } catch (UnexpectedNullException | WifiTether.WifiTetherException e) {
+                throw withCause(new RemoteException("Failed to get wifi tether state"), e);
             }
         }
 
         @Override
-        public void setTetheringEnabled(boolean isOn) throws RemoteException {
-            Log.d(Util.LOG_TAG, String.format("Setting tethering state to %b", isOn));
-            mWifiTether.setEnabled(isOn);
+        public void setWifiTetherEnabled(boolean enabled) throws RemoteException {
+            Log.d(Util.LOG_TAG, String.format("Setting wifi tether enabled to %b", enabled));
+            try {
+                mWifiTether.setEnabled(enabled);
+            } catch (WifiTether.WifiTetherException e) {
+                throw withCause(new RemoteException(String.format("Failed to set wifi tether state to %b", enabled)), e);
+            }
         }
     };
 }

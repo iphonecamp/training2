@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             nonNull(mTetheringSwitch).setOnCheckedChangeListener((view, isChecked) -> {
                 Log.d(Util.LOG_TAG, String.format("Tethering switch changed to %b", isChecked));
                 try {
-                    nonNull(mService).setTetheringEnabled(isChecked);
+                    nonNull(mService).setWifiTetherEnabled(isChecked);
                 } catch (RemoteException | UnexpectedNullException e) {
                     handleException(e);
                 }
@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Initialize switches state
-                nonNull(mAirplaneSwitch).setChecked(mService.getAirplaneModeEnabled());
-                nonNull(mTetheringSwitch).setChecked(mService.getTetheringEnabled());
+                nonNull(mAirplaneSwitch).setChecked(mService.isAirplaneModeEnabled());
+                nonNull(mTetheringSwitch).setChecked(mService.isWifiTetherEnabled());
 
                 // Enable switches
                 nonNull(mAirplaneSwitch).setEnabled(true);
