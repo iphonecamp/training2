@@ -4,10 +4,20 @@
     package="com.iphonecamp.training2.server">
 
     <!--
-    If app is NOT privileged, this permissions needs to be granted manually (once):
+    Permissions for controlling airplane mode.
+    If app is NOT privileged, this permissions for setting airplane mode can be granted manually (once):
     pm grant com.iphonecamp.training2.server android.permission.WRITE_SECURE_SETTINGS
     -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!--
+    Permissions for controlling wifi tethering.
+    Application must run as a system app
+     -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
     <application

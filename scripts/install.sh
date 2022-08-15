@@ -12,16 +12,15 @@
 
 source ./scripts/common.sh
 
-# Upload apk into a tmp dir
+# Place server apk in priv-app, so it will be installed as a system app after reboot
 adb push "${SERVER_LOCAL_APK_PATH}" "${SERVER_REMOTE_APK_TMP_PATH}"
-
-# Place the apk in priv_app dir
 adb shell "su -c \"\
     mount -o rw,remount,rw /system &&
-    [ -d ${SERVER_REMOTE_APP_DIR} ] || mkdir ${SERVER_REMOTE_APP_DIR} &&
-    chmod 755 ${SERVER_REMOTE_APP_DIR}
+    mkdir ${SERVER_REMOTE_APP_DIR} &&
+    chmod 755 ${SERVER_REMOTE_APP_DIR} &&
     mv ${SERVER_REMOTE_APK_TMP_PATH} ${SERVER_REMOTE_APK_PATH} &&
     chmod 644 ${SERVER_REMOTE_APK_PATH}
     \""
 
+# Install client apk
 adb install -t "${CLIENT_LOCAL_APK_PATH}"

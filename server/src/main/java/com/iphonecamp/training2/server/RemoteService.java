@@ -21,6 +21,7 @@ import static com.iphonecamp.training2.common.UnexpectedNullException.nonNull;
  */
 public class RemoteService extends Service {
     private @Nullable AirplaneMode mAirplaneMode;
+    private @Nullable WifiTether mWifiTether;
 
     @Override
     public void onCreate() {
@@ -28,8 +29,10 @@ public class RemoteService extends Service {
         Log.d(Util.LOG_TAG, "Remote service created");
 
         try {
-            mAirplaneMode = new AirplaneMode(this);
+            mAirplaneMode = new AirplaneMode(getApplicationContext());
+            mWifiTether = new WifiTether(getApplicationContext());
         } catch (UnexpectedNullException e) {
+            Log.e(Util.LOG_TAG, "Failed to create remote service");
             e.printStackTrace();
         }
     }
@@ -44,7 +47,7 @@ public class RemoteService extends Service {
     private final IRemoteService.Stub binder = new IRemoteService.Stub() {
         @Override
         public boolean getAirplaneModeEnabled() throws RemoteException {
-            Log.d(Util.LOG_TAG, "Getting airplane mode to %b");
+            Log.d(Util.LOG_TAG, "Getting airplane mode");
             try {
                 return mAirplaneMode.get();
             } catch (AirplaneMode.InvalidState e) {
@@ -68,15 +71,20 @@ public class RemoteService extends Service {
 
         @Override
         public boolean getTetheringEnabled() throws RemoteException {
-            Log.d(Util.LOG_TAG, "Getting tethering state to %b");
-            // TODO
-            return false;
+            Log.d(Util.LOG_TAG, "Getting tethering state");
+            try {
+                return mWifiTether.getEnabled();
+            } catch (WifiTether.InvalidState e) {
+                RemoteException remoteException = new RemoteException("Failed to get wifi tether state");
+                remoteException.addSuppressed(e);
+                throw remoteException;
+            }
         }
 
         @Override
         public void setTetheringEnabled(boolean isOn) throws RemoteException {
             Log.d(Util.LOG_TAG, String.format("Setting tethering state to %b", isOn));
-            // TODO
+            mWifiTether.setEnabled(isOn);
         }
     };
 }
