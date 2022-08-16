@@ -8,17 +8,18 @@ import java.nio.charset.StandardCharsets;
 import static com.iphonecamp.training2.common.UnexpectedNullException.nonNull;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.iphonecamp.training2.common.UnexpectedNullException;
 
 
 /**
- * Airplane mode getter and setter functions
+ * Airplane mode controller
  */
 public class AirplaneMode {
-    private static final int INVALID_VALUE = -1;
-    private static final int OFF_VALUE = 0;
-    private static final int ON_VALUE = 1;
+    private static final int STATE_INVALID_VALUE = -1;
+    private static final int STATE_OFF_VALUE = 0;
+    private static final int STATE_ON_VALUE = 1;
     private final @NonNull Context mContext;
 
     AirplaneMode(@NonNull Context context) throws UnexpectedNullException {
@@ -28,78 +29,79 @@ public class AirplaneMode {
     /**
      * Invalid state integer value exception
      *
-     * This exception is thrown when trying to covert the State enum from or to an invalid value.
+     * This exception is thrown when failed to make a conversion between state enum and a different type.
      */
-    public static class InvalidState extends Exception {
+    public static class AirplaneModeException extends Exception {
         /**
-         * Constructor from an invalid integer
+         * Construct from message
          *
-         * Thrown when cannot convert an int to enum.
-         *
-         * @param value A value which cannot be converted to a State enum
+         * @param message Detailed error message
          */
-        public InvalidState(int value) {
-            super(String.format(StandardCharsets.UTF_8.name(), "Invalid state value %d", value));
+        public AirplaneModeException(@Nullable String message) {
+            super(message);
         }
 
         /**
-         * Default constructor
+         * Construct from message and cause
          *
-         * Thrown when cannot convert enum to boolean (INVALID_VALUE).
+         * @param message Detailed error message
+         * @param cause Suppressed exception
          */
-        public InvalidState() {
-            super("Cannot use invalid state");
+        public AirplaneModeException(@Nullable String message, @Nullable Throwable cause) {
+            super(message, cause);
         }
     }
 
 
     /**
-     * Possible airplane mode states
+     * Airplane mode state
      */
-    public enum State {
-        INVALID(INVALID_VALUE), OFF(OFF_VALUE), ON(ON_VALUE);
+    private enum State {
+        INVALID(STATE_INVALID_VALUE), OFF(STATE_OFF_VALUE), ON(STATE_ON_VALUE);
 
         private final int mValue;
 
         /**
          * Construct from an integer value
-         * @param value An integer value corresponding to enum
+         *
+         * @param value An integer value corresponding to an airplane mode state
          */
-        private State(int value) {
+        State(int value) {
             mValue = value;
         }
 
         /**
-         * Get integer value corresponding to enum
+         * Get integer value corresponding to airplane mode state enum
          *
          * @return A number that corresponds to state enum
          */
-        public int getValue() {
+        private int getValue() {
             return mValue;
         }
 
         /**
-         * Convert a number to an enum
+         * Get an airplane mode state from an integer value
          *
          * @param value A number to convert to enum
          * @return An enum corresponding to given number
-         * @throws InvalidState if given number doesn't correspond to any enum value
+         * @throws AirplaneModeException if given number doesn't correspond to any enum value
          */
-        public static @NonNull State fromValue(int value) throws InvalidState {
+        public static @NonNull State fromValue(int value) throws AirplaneModeException {
             switch(value) {
-                case INVALID_VALUE:
+                case STATE_INVALID_VALUE:
                     return INVALID;
-                case OFF_VALUE:
+                case STATE_OFF_VALUE:
                     return OFF;
-                case ON_VALUE:
+                case STATE_ON_VALUE:
                     return ON;
                 default:
-                    throw new InvalidState(value);
+                    throw new AirplaneModeException(String.format("%d does not correspond to an airplane mode state", value));
             }
         }
 
         /**
-         * Convert boolean to enum
+         * Get an airplane mode state from a boolean
+         *
          * @param isOn Whether airplane mode is ON
          * @return ON_VALUE if true is given, OFF_VALUE otherwise
          */
@@ -112,30 +114,30 @@ public class AirplaneMode {
         }
 
         /**
-         * Convert enum to boolean
+         * Convert state enum to boolean
          *
-         * @return true if enum is ON_VALUE, false if enum is OFF_VALUE
-         * @throws InvalidState if enum is not VALUE_ON or VALUE_OFF
+         * @return true if airplane mode is ON, false if airplane mode is OFF
+         * @throws AirplaneModeException if enum is not ON or OFF
          */
-        public boolean toBool() throws InvalidState {
+        public boolean toBool() throws AirplaneModeException {
             switch (this) {
                 case OFF:
                     return false;
                 case ON:
                     return true;
                 default:
-                    throw new InvalidState();
+                    throw new AirplaneModeException(String.format("Cannot convert airplane mode state %s to a boolean", this));
             }
         }
     }
 
     /**
-     * Get airplane state
+     * Get airplane mode state
      *
      * @return true if airplane mode is ON, false if airplane mode is OFF
-     * @throws InvalidState if cannot get airplane mode state
+     * @throws AirplaneModeException if cannot get airplane mode state
      */
-    public boolean get() throws InvalidState {
+    public boolean isEnabled() throws AirplaneModeException {
         int value = Settings.Global.getInt(
                 mContext.getContentResolver(),
                 Settings.Global.AIRPLANE_MODE_ON,
@@ -148,14 +150,14 @@ public class AirplaneMode {
     /**
      * Set airplane mode state
      *
-     * @param isOn Whether to set airplane mode to ON (or OFF)
+     * @param enabled Whether to set airplane mode to ON (or OFF)
      */
-    public void set(boolean isOn) {
+    public void setEnabled(boolean enabled) {
 
         Settings.Global.putInt(
                 mContext.getContentResolver(),
                 Settings.Global.AIRPLANE_MODE_ON,
-                State.fromBool(isOn).getValue()
+                State.fromBool(enabled).getValue()
         );
     }
 }

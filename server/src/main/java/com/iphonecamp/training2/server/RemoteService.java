@@ -50,8 +50,8 @@ public class RemoteService extends Service {
         public boolean isAirplaneModeEnabled() throws RemoteException {
             Log.d(Util.LOG_TAG, "Getting airplane mode enabled");
             try {
-                return nonNull(mAirplaneMode).get();
-            } catch (AirplaneMode.InvalidState | UnexpectedNullException e) {
+                return nonNull(mAirplaneMode).isEnabled();
+            } catch (AirplaneMode.AirplaneModeException | UnexpectedNullException e) {
                 throw withCause(new RemoteException("Failed to get airplane mode"), e);
             }
         }
@@ -60,7 +60,7 @@ public class RemoteService extends Service {
         public void setAirplaneModeEnabled(boolean enabled) throws RemoteException {
             Log.d(Util.LOG_TAG, String.format("Setting airplane mode enabled to %b", enabled));
             try {
-                nonNull(mAirplaneMode).set(enabled);
+                nonNull(mAirplaneMode).setEnabled(enabled);
             } catch (UnexpectedNullException e) {
                 throw withCause(new RemoteException(String.format("Failed to set airplane mode enabled to %b", enabled)), e);
             }

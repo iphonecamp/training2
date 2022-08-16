@@ -27,7 +27,7 @@ public class WifiTether {
     private final static String IS_WIFI_AP_ENABLED_METHOD_NAME = "isWifiApEnabled";
 
     /**
-     * Invalid wifi tether state exception
+     * Wifi tether exception
      *
      * This exception is thrown when failed to get or set a valid wifi tether state
      */
@@ -50,7 +50,6 @@ public class WifiTether {
         public WifiTetherException(@Nullable String message, @Nullable Throwable cause) {
             super(message, cause);
         }
-
     }
 
     /**
