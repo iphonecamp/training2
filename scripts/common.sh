@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# Common script variables and configurations
+
 # Exit on error
 set -e
 

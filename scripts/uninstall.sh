@@ -1,15 +1,19 @@
 #!/bin/bash
 
-# This script uninstalls training 2 apps from connected device
+# This script uninstalls training2 apps from connected device and reboots the device
 
 source ./scripts/common.sh
 
+# Remove server app
+adb shell "su -c mount -o rw,remount,rw /system"
 adb shell "su -c \"\
-    mount -o rw,remount,rw /system &
-    rm ${SERVER_REMOTE_APK_TMP_PATH} &
+    ([ -e SERVER_REMOTE_APK_TMP_PATH ] && rm ${SERVER_REMOTE_APK_TMP_PATH}) &
+    pm uninstall --user 0 ${SERVER_PACKAGE_NAME} &
     rm -rf ${SERVER_REMOTE_APP_DIR} &
-    pm uninstall --user 0 ${SERVER_PACKAGE_NAME}
     \""
 
 
+# Remove client app
 adb uninstall "${CLIENT_PACKAGE_NAME}"
+
+adb reboot
