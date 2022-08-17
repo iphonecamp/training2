@@ -160,10 +160,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void handleException(@Nullable Exception exc, @Nullable String message) {
         // Log exception
+        final @NonNull String nonNullMsg = null == message ? "" : message;
         if (null == exc) {
-            Log.e(Util.LOG_TAG, "Caught a null exception");
+            Log.e(Util.LOG_TAG, String.format("Caught a null exception with message '%s'", nonNullMsg));
         } else {
-            Log.e(Util.LOG_TAG, "Caught an exception", exc);
+            Log.e(Util.LOG_TAG, String.format("Caught an exception with message '%s'", nonNullMsg), exc);
         }
 
         // Show an error alert
