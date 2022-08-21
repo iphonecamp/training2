@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     handleException(e);
                 }
             });
-        } catch (UnexpectedNullException e) {
+        } catch (UnexpectedNullException | Resources.NotFoundException e) {
             handleException(e);
         }
     }
