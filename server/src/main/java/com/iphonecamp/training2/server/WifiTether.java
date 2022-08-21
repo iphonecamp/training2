@@ -85,8 +85,10 @@ public class WifiTether {
 
 
     /**
+     * Check whether wifi tether is enabled
      *
-     * @return Check whether wifi tether is enabled
+     * @return true is wifi tether is enabled, false otherwise
+     *
      * @throws WifiTetherException If failed to obtain a valid wifi tether state
      */
     public boolean isEnabled() throws WifiTetherException {
