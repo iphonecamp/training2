@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Client</string>
+    <string name="airplane_mode">Airplane mode</string>
+    <string name="wifi_tether">WiFi Tether</string>
+    <string name="misc_fatal_error_message">"Something went wrong, please restart the app"</string>
+    <string name="error_alert_title">"Oops..."</string>
+    <string name="ok_text">"OK"</string>
+</resources>

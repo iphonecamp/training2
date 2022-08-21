@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.iphonecamp.training2.server">
+
+    <!--
+    Permissions for controlling airplane mode.
+    If app is NOT privileged, this permissions for setting airplane mode can be granted manually (once):
+    pm grant com.iphonecamp.training2.server android.permission.WRITE_SECURE_SETTINGS
+    -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!--
+    Permissions for controlling wifi tethering.
+    Application must run as a system app
+     -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Tether">
+
+        <service
+            android:name=".RemoteService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.iphonecamp.training2.server.RemoteService" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>
